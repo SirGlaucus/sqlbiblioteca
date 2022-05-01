@@ -80,8 +80,19 @@ INSERT INTO prestamos (rut_socio_fk, isnb_libro_fk, fecha_prestamo, fecha_devolu
 INSERT INTO prestamos (rut_socio_fk, isnb_libro_fk, fecha_prestamo, fecha_devolucion) VALUES ('3333333-3', 2222222222222, '31-01-2020', '12-02-2020');
 COMMIT;
 
+-- Mostrar todos los libros que posean menos de 300 páginas. (0.5 puntos)
 SELECT * FROM libros WHERE numero_paginas < 300;
 
+-- Mostrar todos los autores que hayan nacido después del 01-01-1970. (0.5 puntos)
 SELECT * FROM autores WHERE fecha_nacimiento > 1969;
 
-SELECT COUNT(isnb_libro_fk) * 700, rut_socio_fk FROM prestamos GROUP BY rut_socio_fk;
+-- ¿Cuál es el libro más solicitado? (0.5 puntos).
+
+SELECT titulo, MAX(veces_pedido) FROM 
+(SELECT COUNT(isnb_libro_fk) AS veces_pedido, isnb_libro_fk FROM prestamos GROUP BY isnb_libro_fk) as prest 
+INNER JOIN libros ON isnb_libro_fk = isbn 
+WHERE veces_pedido = 
+(SELECT COUNT(isnb_libro_fk) as contador_libros FROM prestamos GROUP BY isnb_libro_fk ORDER BY contador_libros DESC LIMIT 1) GROUP BY titulo;
+
+-- Si se cobrara una multa de $100 por cada día de atraso, mostrar cuánto debería pagar cada usuario que entregue el préstamo después de 7 días. (0.5 puntos)
+SELECT nombre, apellido, (fecha_devolucion - fecha_prestamo - 7) * 100 AS deuda FROM socios INNER JOIN prestamos ON socios.rut = prestamos.rut_socio_fk WHERE (fecha_devolucion - fecha_prestamo) > 7;
