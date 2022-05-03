@@ -88,7 +88,7 @@ SELECT * FROM autores WHERE fecha_nacimiento > 1969;
 
 -- ¿Cuál es el libro más solicitado? (0.5 puntos).
 
-SELECT titulo, MAX(veces_pedido) FROM 
+SELECT titulo, MAX(veces_pedido) AS numero_solicitudes FROM 
 (SELECT COUNT(isnb_libro_fk) AS veces_pedido, isnb_libro_fk FROM prestamos GROUP BY isnb_libro_fk) as prest 
 INNER JOIN libros ON isnb_libro_fk = isbn 
 WHERE veces_pedido = 
